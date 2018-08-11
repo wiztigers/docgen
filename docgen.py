@@ -8,6 +8,7 @@
 # __doc__ = """Program description"""
 
 import argparse
+import mimetypes
 from os import path
 from sys import exit
 import subprocess
@@ -17,11 +18,11 @@ import subprocess
 def createParser():
 	parser = argparse.ArgumentParser(description="HTML and PDF documentation generator")
 	parser.add_argument('-v', '--verbose', help="verbose mode", action='store_true', default=False)
-	parser.add_argument('-i', '--input', help="input files", nargs='?')
+	parser.add_argument('-i', '--input', help="input file", nargs='?')
 	parser.add_argument('-o', '--output',  help="output directory", nargs='?')
 	parser.add_argument('-e', '--outdir',  help="output directory", nargs='?', default='doc')
 	parser.add_argument('-a', '--html', help="generate html output using asciidoctor. This is the default.", action='store_true')
-	parser.add_argument('-p', '--pdf',     help="generate pdf document. If --html option is provided, wkhtmltopdf will be used. If not, asciidoctor-pdf will be.", action='store_true')
+	parser.add_argument('-p', '--pdf',     help="generate pdf document. If input is a HTML file, wkhtmltopdf will be used. If not, asciidoctor-pdf will be.", action='store_true')
 	parser.add_argument('-s', '--stylesheet', help="SASS stylesheet name", nargs='?')
 	parser.add_argument('-d', '--stylesdir',  help="SASS stylesheets folder", nargs='?', default='sass')
 	parser.add_argument('-k', '--linkstyle',    help="Link stylesheet in output", action='store_true', default=False)
@@ -29,6 +30,10 @@ def createParser():
 	return parser
 
 
+
+def isHTML(filename):
+	mime = mimetypes.MimeTypes().guess_type(args.input)
+	return (mime[0] is not None) and (mime[0].endswith('html'))
 
 def addExtension(filename, suffix):
 	res = path.splitext(path.basename(filename))[0]
@@ -97,18 +102,22 @@ if __name__ == '__main__':
 		if args.verbose: print('No input file provided: nothing to do.')
 		exit(0)
 
+	html = isHTML(args.input)
 	if not (args.html or args.pdf):
-		args.html = True
+		if html:
+			args.pdf = True
+		else:
+			args.html = True
 	args.wkhtmltopdf_path = './wkhtmltox/bin/wkhtmltopdf'
 
-	if args.html:
+	if args.html and not html:
 		command = createHTMLCall(args)
 		returncode = call(command)
 		if returncode is not 0:
 			exit(returncode)
 
 	if args.pdf:
-		if args.html:
+		if html:
 			command = createHTML2PDFCall(args)
 		else:
 			command = createPDFCall(args)
