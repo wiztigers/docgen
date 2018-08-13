@@ -14,14 +14,17 @@ script:
   - ./docgen.py --html --input ${adocinput}  --output ${htmloutput} --outdir gh-pages --stylename ${stylename} --stylesdir ${stylesdir} --linkstyle
   - ./docgen.py --pdf  --input ${htmloutput} --output ${pdfoutput}  --outdir gh-pages
 
-# https://docs.travis-ci.com/user/deployment/pages/
+## https://docs.travis-ci.com/user/deployment/pages/
 deploy:
   provider: pages
   skip-cleanup: true
   github-token: $GITHUB_TOKEN
   keep-history: true
-  commiter-from-gh: true
+  committer-from-gh: true
   local-dir: gh-pages
   on:
     branch: master
+## alternative:
+#deploy:
+#  - ./deploy.sh
 
