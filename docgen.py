@@ -95,7 +95,7 @@ def call(command):
 
 def exportStyle(config):
 	cssfile = config.stylename+'.css'
-	src = path.join(config.stylesdir, 'stylesheets', cssfile)
+	src = path.join(config.stylesdir, cssfile)
 	dst = path.join(config.outdir, cssfile)
 	shutil.copyfile(src, dst)
 
