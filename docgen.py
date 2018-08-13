@@ -69,8 +69,9 @@ def createPDFCall(config):
 
 def createHTML2PDFCall(config):
 	command = config.wkhtmltopdf_path
-	command += '--enable-internal-links'
-	command += '--enable-external-links'
+	command += ' --enable-internal-links'
+	command += ' --enable-external-links'
+	command += ' '+config.input
 	output = config.output
 	if output is None:
 		output = config.input
