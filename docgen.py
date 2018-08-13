@@ -12,6 +12,7 @@ import mimetypes
 from os import path
 from sys import exit
 import subprocess
+import shutil
 
 
 
@@ -92,6 +93,12 @@ def call(command):
 		print(errs)
 	return child.returncode
 
+def exportStyle(config):
+	cssfile = config.stylename+'.css'
+	src = path.join(config.stylesdir, 'stylesheets', cssfile)
+	dst = path.join(config.outdir, cssfile)
+	shutil.copyfile(src, dst)
+
 
 
 if __name__ == '__main__':
@@ -113,6 +120,8 @@ if __name__ == '__main__':
 	if args.html and not html:
 		command = createHTMLCall(args)
 		returncode = call(command)
+		if args.linkstyle:
+			exportStyle(args)
 		if returncode is not 0:
 			exit(returncode)
 

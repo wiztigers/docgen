@@ -8,7 +8,7 @@ env:
   - pdfoutput="file.pdf"
 
 before_install:
-  - ./setup.sh ${stylesdir}
+  - ./setup.sh ${stylesdir} ${stylename}
 
 script:
   - ./docgen.py --html --input ${adocinput}  --output ${htmloutput} --outdir gh-pages --stylename ${stylename} --stylesdir ${stylesdir} --linkstyle
