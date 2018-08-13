@@ -23,7 +23,7 @@ def createParser():
 	parser.add_argument('-e', '--outdir',  help="output directory", nargs='?', default='doc')
 	parser.add_argument('-a', '--html', help="generate html output using asciidoctor. This is the default.", action='store_true')
 	parser.add_argument('-p', '--pdf',     help="generate pdf document. If input is a HTML file, wkhtmltopdf will be used. If not, asciidoctor-pdf will be.", action='store_true')
-	parser.add_argument('-s', '--stylesheet', help="SASS stylesheet name", nargs='?')
+	parser.add_argument('-s', '--stylename', help="SASS stylesheet name", nargs='?')
 	parser.add_argument('-d', '--stylesdir',  help="SASS stylesheets folder", nargs='?', default='sass')
 	parser.add_argument('-k', '--linkstyle',    help="Link stylesheet in output", action='store_true', default=False)
 	parser.add_argument('-m', '--macro', help="path to macro file", nargs='*', action='append', default=[])
@@ -45,8 +45,8 @@ def createHTMLCall(config):
 	command = 'asciidoctor '+config.input
 	if config.linkstyle:
 		command += ' -a linkcss'
-	if config.stylesheet is not None:
-		command += ' -a stylesheet="'+config.stylesheet+'.css"'
+	if config.stylename is not None:
+		command += ' -a stylesheet="'+config.stylename+'.css"'
 	for macros in config.macro:
 		for m in macros:
 			command += ' -r '+m
