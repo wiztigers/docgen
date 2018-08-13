@@ -2,6 +2,7 @@
 
 factorydir="asciidoctor-stylesheet-factory"
 stylesdir=$1
+stylename=$2
 
 # asciidoctor & dependencies
 gem install prawn -v 2.1.0
