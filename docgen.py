@@ -20,7 +20,7 @@ def createParser():
 	parser = argparse.ArgumentParser(description="HTML and PDF documentation generator")
 	parser.add_argument('-v', '--verbose', help="verbose mode", action='store_true', default=False)
 	parser.add_argument('-i', '--input', help="input file", nargs='?')
-	parser.add_argument('-o', '--output',  help="output directory", nargs='?')
+	parser.add_argument('-o', '--output',  help="output file", nargs='?')
 	parser.add_argument('-e', '--outdir',  help="output directory", nargs='?', default='doc')
 	parser.add_argument('-a', '--html', help="generate html output using asciidoctor. This is the default.", action='store_true')
 	parser.add_argument('-p', '--pdf',     help="generate pdf document. If input is a HTML file, wkhtmltopdf will be used. If not, asciidoctor-pdf will be.", action='store_true')
@@ -28,6 +28,7 @@ def createParser():
 	parser.add_argument('-d', '--stylesdir',  help="SASS stylesheets folder", nargs='?', default='sass')
 	parser.add_argument('-k', '--linkstyle',    help="Link stylesheet in output", action='store_true', default=False)
 	parser.add_argument('-m', '--macro', help="path to macro file", nargs='*', action='append', default=[])
+	parser.add_argument('-w', '--exportdir',  help="copy this file (or contents of this directory) to output directory", nargs='*', action='append' default=[])
 	return parser
 
 
@@ -100,6 +101,12 @@ def exportStyle(config):
 	dst = path.join(config.outdir, cssfile)
 	shutil.copyfile(src, dst)
 
+def export(config, filename):
+	if path.isfile(filename):
+		call('cp '+filename+' '+config.outdir)
+	if path.isdir(filename):
+		call('cp -r '+os.path.join(filename,'*')+' '+config.outdir)
+
 
 
 if __name__ == '__main__':
@@ -135,3 +142,5 @@ if __name__ == '__main__':
 		if returncode is not 0:
 			exit(returncode)
 
+	for folder in args.exportdir:
+		export(args, folder)
