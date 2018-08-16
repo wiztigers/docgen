@@ -81,15 +81,15 @@ def createHTML2PDFCall(config):
 
 
 
-def call(command):
-	if args.verbose: print('call [html]: '+command)
+def call(command, config):
+	if config.verbose: print('call: '+command)
 	try:
 		child = subprocess.run(command+' 1>&2', shell=True, stderr=subprocess.PIPE, universal_newlines=True)
 		errs = child.stderr
 	except AttributeError: # os.python.version < 3.5
 		child = subprocess.Popen(command+' 1>&2', shell=True, stderr=subprocess.PIPE, universal_newlines=True)
 		outs, errs = child.communicate()
-	if args.verbose: print('return code: '+str(child.returncode))
+	if config.verbose: print('return code: '+str(child.returncode))
 	if child.returncode is not 0:
 		print(errs)
 	return child.returncode
@@ -98,6 +98,7 @@ def exportStyle(config):
 	cssfile = config.stylename+'.css'
 	src = path.join(config.stylesdir, cssfile)
 	dst = path.join(config.outdir, cssfile)
+	if config.verbose: print('export: "'+src+'" --> "'+dst+'"')
 	shutil.copyfile(src, dst)
 
 
@@ -120,7 +121,7 @@ if __name__ == '__main__':
 
 	if args.html and not html:
 		command = createHTMLCall(args)
-		returncode = call(command)
+		returncode = call(command, args)
 		if args.linkstyle:
 			exportStyle(args)
 		if returncode is not 0:
@@ -131,7 +132,7 @@ if __name__ == '__main__':
 			command = createHTML2PDFCall(args)
 		else:
 			command = createPDFCall(args)
-		returncode = call(command)
+		returncode = call(command, args)
 		if returncode is not 0:
 			exit(returncode)
 
