@@ -99,7 +99,10 @@ def exportStyle(config):
 	src = path.join(config.stylesdir, cssfile)
 	dst = path.join(config.outdir, cssfile)
 	if config.verbose: print('export: "'+src+'" --> "'+dst+'"')
-	shutil.copyfile(src, dst)
+	try:
+		shutil.copyfile(src, dst)
+	except IOError:
+		if config.verbose: print('file "'+src+'" does not exist.' )
 
 
 
