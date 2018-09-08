@@ -17,8 +17,13 @@ gem install compass zurb-foundation # CSS stylesheets generation
 [[ -d ${factorydir} ]] || git clone https://github.com/asciidoctor/asciidoctor-stylesheet-factory.git ${factorydir}
 # generate CSS stylesheet
 cp -R ${stylesdir} ${factorydir}/
-cd ${factorydir} && compass compile ${stylesdir}/${stylename}.scss && cd ..
-cp ${factorydir}/stylesheets/${stylename}.css ${stylesdir}/${stylename}.css
+cd ${factorydir}
+shift
+for stylename; do
+  compass compile ${stylesdir}/${stylename}.scss
+  cp stylesheets/${stylename}.css ../${stylesdir}/${stylename}.css
+done
+cd ..
 
 # get the latest version of wkhtmltopdf and untar it
 [[ -e wkhtmltox-0.12.4_linux-generic-amd64.tar.xz ]] || wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.4/wkhtmltox-0.12.4_linux-generic-amd64.tar.xz
